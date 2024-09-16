@@ -1,6 +1,6 @@
-require('dotenv').config()
-const mysql = require("mysql2");
-const connection = mysql.createConnection({
+import 'dotenv/config'
+import mysql from 'mysql2/promise'
+export const connection = await mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
@@ -15,5 +15,3 @@ connection.connect((err) => {
     }
 })
 
-
-module.exports = {connection};
