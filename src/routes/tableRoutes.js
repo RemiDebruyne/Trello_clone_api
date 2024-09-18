@@ -7,4 +7,5 @@ router.get('/:id', tableController.getTableById)
 router.post('/create', tableController.addTable)
 router.put('/update/:id', tableController.updateTable)
 router.delete('/delete/:id', tableController.deleteTable)
-export {router}
+
+export {router as tableRouter}
