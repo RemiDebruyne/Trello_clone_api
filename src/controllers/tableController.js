@@ -1,15 +1,7 @@
-import { connection, db } from "../../config/db.ts";
-import { tables, lists, cards } from "../db/schema.ts";
-import { eq, count } from "drizzle-orm";
-
-async function checkIfTableExist(id) {
-  const query = await db.query.tables.findFirst({
-    columns: { id: true },
-    where: eq(tables.id, id),
-  });
-
-  query ? true : false;
-}
+import { db } from "../../config/db.ts";
+import { tables} from "../db/schema.ts";
+import { eq  } from "drizzle-orm";
+import { checkIfEntityExist } from "../Helpers/EntityChecker.js";
 
 export const getTables = async (req, res) => {
   try {
@@ -55,8 +47,9 @@ export const getTables = async (req, res) => {
 export const getTableById = async (req, res) => {
   const tableId = req.params.id;
 
-  if (!checkIfTableExist(tableId)) {
-    res.status(404).send("erreur 404");
+  if (!await checkIfEntityExist(tableId, tables)) {
+    res.status(404).send("erreur 404a");
+    return;
   }
 
   try {
@@ -94,9 +87,9 @@ export const addTable = async (req, res) => {
 
 export const updateTable = async (req, res) => {
   const tableId = req.params.id;
-
-  if (!checkIfTableExist(tableId)) {
+  if (!await checkIfEntityExist(tableId, tables)) {
     res.status(404).send("erreur 404");
+    return;
   }
 
   const table = req.body;
@@ -122,13 +115,14 @@ export const updateTable = async (req, res) => {
 export const deleteTable = async (req, res) => {
   const tableId = req.params.id;
   try {
-    if (!checkIfTableExist(tableId)) {
-      res.status(404).send("erreur 404");
+    if (!await checkIfEntityExist(tableId, tables)) {
+      res.status(404).send("erreur 404aaa");
+      return;
     }
 
     const result = await db.delete(tables).where(eq(tables.id, tableId));
     res.json({
-      message: `Table with id ${tableId} was deleted successfuly`
+      message: `Table with id ${tableId} was deleted successfuly`,
     });
   } catch (error) {
     console.log(error);
