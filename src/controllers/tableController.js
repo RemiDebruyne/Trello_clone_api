@@ -51,14 +51,8 @@ export const updateTable = async (req, res) => {
 
   const table = req.body;
   try {
-    const result = await db
-      .update(tables)
-      .set({
-        name: table.name,
-      })
-      .where(eq(tables.id, tableId));
+    const result = await tableRepository.update(tableId, table);
 
-    console.log(result);
     if (result[0].affectedRows === 0) {
       res.status(404).send("Erreur 404 - bad request");
       return;
@@ -78,10 +72,9 @@ export const updateTable = async (req, res) => {
 export const deleteTable = async (req, res) => {
   const tableId = req.params.id;
   try {
-    const result = await db.delete(tables).where(eq(tables.id, tableId));
 
-    console.log(result);
-
+    const result = await tableRepository.deleteTable(tableId)
+      
     if (result[0].affectedRows === 0) {
       res.status(404).send("Erreur 404 - bad request");
       return;
