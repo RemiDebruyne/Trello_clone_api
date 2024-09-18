@@ -1,66 +1,27 @@
 import { db } from "../../config/db.ts";
-import { tables} from "../db/schema.ts";
-import { eq  } from "drizzle-orm";
-import { checkIfEntityExist } from "../Helpers/EntityChecker.js";
+import { tables } from "../db/schema.ts";
+import { eq } from "drizzle-orm";
+import * as tableRepository from "../repository/tableRepository.ts";
 
 export const getTables = async (req, res) => {
   try {
-    const result = await db.query.tables.findMany({
-      columns: { id: true, name: true },
-      with: { lists: { with: { cards: true } } },
-    });
+    const result = await tableRepository.getAll();
     res.json(result);
   } catch (error) {
     console.log(error);
   }
-
-  // Exemple de requête avec la syntaxe sql like
-  // try {
-  //   const result = await db
-  //     .select({
-  //         tableId: tables.id,
-  //         tableName: tables.name,
-  //         listId: lists.id,
-  //         listName: lists.name,
-  //     })
-  //     .from(tables)
-  //     .leftJoin(lists, eq(tables.id, lists.tableId))
-  //   // .leftJoin(cards, eq(lists.id, cards.listId));
-
-  //   res.json(result);
-  // } catch (error) {
-  //   console.log(error);
-  // }
-
-  // Exemple de requete manuelle en sql
-  // const QUERY =
-  //   "SELECT t.tableId, t.name AS tableName, l.listId, l.name AS listName, c.cardId, c.name AS cardname FROM Tables AS t LEFT JOIN Lists AS l ON t.tableId=l.tableId LEFT JOIN Cards AS c ON l.listId=c.listId;";
-
-  // try {
-  //   const [results] = await connection.query(QUERY);
-  //   res.json(results);
-  // } catch (error) {
-  //   console.log(error);
-  // }
 };
 
 export const getTableById = async (req, res) => {
   const tableId = req.params.id;
 
-  if (!await checkIfEntityExist(tableId, tables)) {
+  if (!(await checkIfEntityExist(tableId, tables))) {
     res.status(404).send("erreur 404a");
     return;
   }
 
   try {
-    const result = await db.query.tables.findFirst({
-      columns: { id: true, name: true },
-      with: {
-        lists: { with: { cards: true } },
-      },
-      where: eq(tables.id, tableId),
-    });
-
+    const result = await tableRepository.getById(tableId);
     if (!result) {
       res.status(404).send("Erreur 404 - bad request");
     }
@@ -87,10 +48,6 @@ export const addTable = async (req, res) => {
 
 export const updateTable = async (req, res) => {
   const tableId = req.params.id;
-  if (!await checkIfEntityExist(tableId, tables)) {
-    res.status(404).send("erreur 404");
-    return;
-  }
 
   const table = req.body;
   try {
@@ -100,6 +57,12 @@ export const updateTable = async (req, res) => {
         name: table.name,
       })
       .where(eq(tables.id, tableId));
+
+    console.log(result);
+    if (result[0].affectedRows === 0) {
+      res.status(404).send("Erreur 404 - bad request");
+      return;
+    }
 
     res.json({
       message: "table updated succesfuly",
@@ -115,12 +78,15 @@ export const updateTable = async (req, res) => {
 export const deleteTable = async (req, res) => {
   const tableId = req.params.id;
   try {
-    if (!await checkIfEntityExist(tableId, tables)) {
-      res.status(404).send("erreur 404aaa");
+    const result = await db.delete(tables).where(eq(tables.id, tableId));
+
+    console.log(result);
+
+    if (result[0].affectedRows === 0) {
+      res.status(404).send("Erreur 404 - bad request");
       return;
     }
 
-    const result = await db.delete(tables).where(eq(tables.id, tableId));
     res.json({
       message: `Table with id ${tableId} was deleted successfuly`,
     });
