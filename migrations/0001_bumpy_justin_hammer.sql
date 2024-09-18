@@ -1,0 +1,1 @@
+ALTER TABLE `Tags` MODIFY COLUMN `color` varchar(7) NOT NULL;
