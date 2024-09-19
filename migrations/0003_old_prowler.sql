@@ -1,0 +1,1 @@
+ALTER TABLE `Tables` ADD `background_url` text NOT NULL;

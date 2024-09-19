@@ -13,16 +13,21 @@ export const getTables = async (req, res) => {
 };
 
 export const getTableById = async (req, res) => {
-  const tableId = req.params.id;
-
   try {
-    const result = await tableRepository.getById(tableId);
+    const tableId = req.params.id;
 
-    if (result[0].affectedRows === 0) {
+    if (
+      !(await db.query.tables.findFirst({
+        columns: { id: true },
+        where: eq(tables.id, tableId),
+      }))
+    ) {
       res.status(404).send("Erreur 404 - bad request");
       return;
     }
-    
+
+    const result = await tableRepository.getById(tableId);
+
     res.json(result);
   } catch (error) {
     console.log(error);
@@ -31,8 +36,8 @@ export const getTableById = async (req, res) => {
 
 export const addTable = async (req, res) => {
   try {
-    const { name } = req.body;
-    const result = await tableRepository.add(name);
+    const table = req.body;
+    const result = await tableRepository.add(table);
 
     if (result[0].affectedRows === 0) {
       res.status(404).send("Erreur 404 - bad request");
@@ -54,8 +59,6 @@ export const updateTable = async (req, res) => {
   const table = req.body;
   try {
     const result = await tableRepository.update(tableId, table);
-
-
 
     res.json({
       message: "table updated succesfuly",

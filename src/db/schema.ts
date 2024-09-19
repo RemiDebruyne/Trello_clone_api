@@ -14,6 +14,7 @@ import {
 export const tables = mysqlTable("Tables", {
   id: int("id").primaryKey().autoincrement().notNull(),
   name: varchar("name", { length: 50 }).notNull(),
+  backgroundUrl: text('background_url').notNull()
 });
 
 export const lists = mysqlTable("Lists", {
