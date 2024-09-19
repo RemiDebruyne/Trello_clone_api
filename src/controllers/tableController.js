@@ -15,17 +15,14 @@ export const getTables = async (req, res) => {
 export const getTableById = async (req, res) => {
   const tableId = req.params.id;
 
-  if (!(await checkIfEntityExist(tableId, tables))) {
-    res.status(404).send("erreur 404a");
-    return;
-  }
-
   try {
     const result = await tableRepository.getById(tableId);
-    if (!result) {
-      res.status(404).send("Erreur 404 - bad request");
-    }
 
+    if (result[0].affectedRows === 0) {
+      res.status(404).send("Erreur 404 - bad request");
+      return;
+    }
+    
     res.json(result);
   } catch (error) {
     console.log(error);
@@ -35,8 +32,13 @@ export const getTableById = async (req, res) => {
 export const addTable = async (req, res) => {
   try {
     const { name } = req.body;
-    const result = await db.insert(tables).values({ name: name });
-    // res.json(result)
+    const result = await tableRepository.add(name);
+
+    if (result[0].affectedRows === 0) {
+      res.status(404).send("Erreur 404 - bad request");
+      return;
+    }
+
     res.json({
       message: "Table was successfuly created",
       table: { id: result[0].insertId, name: name },
@@ -53,10 +55,7 @@ export const updateTable = async (req, res) => {
   try {
     const result = await tableRepository.update(tableId, table);
 
-    if (result[0].affectedRows === 0) {
-      res.status(404).send("Erreur 404 - bad request");
-      return;
-    }
+
 
     res.json({
       message: "table updated succesfuly",
@@ -72,9 +71,8 @@ export const updateTable = async (req, res) => {
 export const deleteTable = async (req, res) => {
   const tableId = req.params.id;
   try {
+    const result = await tableRepository.deleteTable(tableId);
 
-    const result = await tableRepository.deleteTable(tableId)
-      
     if (result[0].affectedRows === 0) {
       res.status(404).send("Erreur 404 - bad request");
       return;

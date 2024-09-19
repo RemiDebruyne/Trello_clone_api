@@ -21,6 +21,11 @@ export const getById = async (id: number) => {
       return result
 }
 
+export const add = async (name: string) => {
+  const result = await db.insert(tables).values({ name: name });
+  return result;
+}
+
 export const update = async(id: number, table: any) => {
     const result = await db
     .update(tables)
