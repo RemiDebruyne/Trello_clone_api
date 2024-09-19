@@ -15,7 +15,7 @@ export const addList = async (req, res) => {
 
     res.json({
       message: 'List was created successfully',
-      card: {
+      list: {
         id: result[0].insertId,
         ...list
       }

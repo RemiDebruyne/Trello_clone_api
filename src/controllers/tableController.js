@@ -46,7 +46,7 @@ export const addTable = async (req, res) => {
 
     res.json({
       message: "Table was successfuly created",
-      table: { id: result[0].insertId, name: name },
+      table: { id: result[0].insertId, name: table.name },
     });
   } catch (error) {
     console.log(error);
