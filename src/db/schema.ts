@@ -20,7 +20,7 @@ export const lists = mysqlTable("Lists", {
   id: int("id").primaryKey().autoincrement().notNull(),
   name: varchar("name", { length: 50 }).notNull(),
   tableId: int("tableId")
-    .references(() => tables.id)
+    .references(() => tables.id, {onDelete: 'cascade'})
     .notNull(),
 });
 
@@ -28,7 +28,7 @@ export const cards = mysqlTable("Cards", {
   id: int("id").primaryKey().autoincrement().notNull(),
   name: varchar("name", { length: 50 }).notNull(),
   listId: int("listId")
-    .references(() => lists.id)
+    .references(() => lists.id, {onDelete: 'cascade'})
     .notNull(),
   description: text("description"),
   startDate: date("start_date").notNull(),
@@ -44,7 +44,7 @@ export const tags = mysqlTable("Tags", {
 export const cardTag = mysqlTable("cardTag", {
   id: int("id").primaryKey().autoincrement().notNull(),
   cardId: int("cardId").references(() => cards.id),
-  tagId: int('tagId').references(() => tags.id),
+  tagId: int('tagId').references(() => tags.id, {onDelete: 'cascade'}),
 });
 
 // RELATIONS

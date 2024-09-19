@@ -15,6 +15,13 @@
       "when": 1726649579132,
       "tag": "0001_bumpy_justin_hammer",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1726734658355,
+      "tag": "0002_brave_ted_forrester",
+      "breakpoints": true
     }
   ]
 }
