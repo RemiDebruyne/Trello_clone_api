@@ -1,6 +1,6 @@
 import { db } from "../../config/db.ts";
 import { tables } from "../db/schema.ts";
-import { ConsoleLogWriter, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 
 export const getAll = async () => {
     const result = await db.query.tables.findMany({
@@ -18,7 +18,6 @@ export const getById = async (id: number) => {
         },
         where: eq(tables.id, id),
       });
-      console.log(result)
       return result
 }
 

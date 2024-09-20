@@ -2,6 +2,7 @@ import { db } from "../../config/db.ts";
 import { tables } from "../db/schema.ts";
 import { eq } from "drizzle-orm";
 import * as tableRepository from "../repository/tableRepository.ts";
+import { resourceLimits } from "worker_threads";
 
 export const getTables = async (req, res) => {
   try {
@@ -27,7 +28,8 @@ export const getTableById = async (req, res) => {
     }
 
     const result = await tableRepository.getById(tableId);
-
+    result.lists.sort((a, b) => a.index - b.index)
+    result.lists.map(el => el.cards.sort((a, b) => a.index - b.index))
     res.json(result);
   } catch (error) {
     console.log(error);

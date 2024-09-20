@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm";
 export const add = async (card: any) => {
     return await db
       .insert(cards)
-      .values({ name: card.name, listId: card.listId, startDate: new Date()});
+      .values({ name: card.name, listId: card.listId, startDate: new Date(), index: card.index});
   };
   
   export const update = async (id: number, card: any) => {
@@ -15,7 +15,8 @@ export const add = async (card: any) => {
         name: card.name,
         listId: card.listId,
         description: card.description,
-        endDate: card.end_date
+        endDate: card.end_date,
+        index: card.index
       })
       .where(eq(cards.id, id));
   };

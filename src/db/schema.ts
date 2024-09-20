@@ -23,6 +23,7 @@ export const lists = mysqlTable("Lists", {
   tableId: int("tableId")
     .references(() => tables.id, {onDelete: 'cascade'})
     .notNull(),
+  index: int('index').notNull()
 });
 
 export const cards = mysqlTable("Cards", {
@@ -34,6 +35,7 @@ export const cards = mysqlTable("Cards", {
   description: text("description"),
   startDate: date("start_date").notNull(),
   endDate: date("end_date"),
+  index: int('index').notNull()
 });
 
 export const tags = mysqlTable("Tags", {
@@ -44,7 +46,7 @@ export const tags = mysqlTable("Tags", {
 
 export const cardTag = mysqlTable("cardTag", {
   id: int("id").primaryKey().autoincrement().notNull(),
-  cardId: int("cardId").references(() => cards.id),
+  cardId: int("cardId").references(() => cards.id, {onDelete: 'cascade'}),
   tagId: int('tagId').references(() => tags.id, {onDelete: 'cascade'}),
 });
 

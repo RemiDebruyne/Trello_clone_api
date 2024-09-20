@@ -4,7 +4,7 @@ import { eq } from "drizzle-orm";
 
 export const getAllCards = async (id: number) => {
   return await db.query.cards.findMany({
-    columns: {id: true, name: true, listId: true},
+    columns: {id: true, name: true, listId: true, index: true},
     where: eq(cards.listId, id)
   })
 }
@@ -12,7 +12,7 @@ export const getAllCards = async (id: number) => {
 export const add = async (list: any) => {
   return await db
     .insert(lists)
-    .values({ name: list.name, tableId: list.tableId });
+    .values({ name: list.name, tableId: list.tableId, index: list.index });
 };
 
 export const update = async (id: number, list: any) => {
@@ -20,6 +20,7 @@ export const update = async (id: number, list: any) => {
     .update(lists)
     .set({
       name: list.name,
+      index: list.index
     })
     .where(eq(lists.id, id));
 };
