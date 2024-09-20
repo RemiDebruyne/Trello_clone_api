@@ -26,6 +26,16 @@ export const addList = async (req, res) => {
   }
 };
 
+export const getAllCards = async (req,res) =>{
+  try {
+    const idFromRoute = req.params.id;
+    const result = await listRepository.getAllCards(idFromRoute)
+    res.json(result)
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export const updateList = async (req, res) => {
   try {
     const idFromRoute = req.params.id;
@@ -39,7 +49,7 @@ export const updateList = async (req, res) => {
 
     res.json({
       message: "list updated succesfuly",
-      table: {
+      list: {
         id: idFromRoute,
         ...list
       },
@@ -52,7 +62,7 @@ export const updateList = async (req, res) => {
 export const deleteList = async (req, res) => {
   try {
     const idFromroute = req.params.id;
-    const result = await listRepository.deleteTable(idFromroute)
+    const result = await listRepository.deleteList(idFromroute)
 
     if (result[0].affectedRows === 0) {
       res.status(404).send("Erreur 404 - bad request");
